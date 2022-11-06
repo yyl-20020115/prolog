@@ -1,22 +1,15 @@
 ﻿using System;
 
-namespace Prolog
+namespace Prolog;
+
+[Serializable]
+public class Atom : IArgument
 {
-    [Serializable]
-    public class Atom : IArgument
-    {
-        public Atom () {}
+    public Atom () {}
 
-        public Atom (string name)
-        {
-            Name = name;
-        }
+    public Atom(string name) => Name = name;
 
-        public string Name {get; set;}
+    public string Name {get; set;}
 
-        T IArgument.Accept<T>(IArgumentVisitor<T> visitor)
-        {
-            return visitor.Visit (this);
-        }
-    }
+    T IArgument.Accept<T>(IArgumentVisitor<T> visitor) => visitor.Visit(this);
 }

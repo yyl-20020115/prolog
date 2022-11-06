@@ -1,7 +1,6 @@
-﻿namespace Prolog
+﻿namespace Prolog;
+
+public interface IArgument
 {
-    public interface IArgument
-    {
-        T Accept <T> (IArgumentVisitor<T> visitor);
-    }
+    T Accept <T> (IArgumentVisitor<T> visitor);
 }

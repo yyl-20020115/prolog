@@ -1,7 +1,6 @@
-﻿namespace Prolog.Runtime
+﻿namespace Prolog.Runtime;
+
+public interface IValueVisitor <T> : IConcreteValueVisitor <T>
 {
-    public interface IValueVisitor <T> : IConcreteValueVisitor <T>
-    {
-        T Visit (Variable variable);
-    }
+    T Visit (Variable variable);
 }

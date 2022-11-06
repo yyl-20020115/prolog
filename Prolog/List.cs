@@ -1,26 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Prolog
+namespace Prolog;
+
+[Serializable]
+public class List : IArgument
 {
-    [Serializable]
-    public class List : IArgument
-    {
-        private readonly IArgument [] elements;
+    private readonly IArgument [] elements;
 
-        public List (params IArgument [] elements)
-        {
-            this.elements = elements;
-        }
+    public List(params IArgument[] elements) => this.elements = elements;
 
-        public IEnumerable <IArgument> Elements
-        {
-            get { return elements; }
-        }
+    public IEnumerable<IArgument> Elements => elements;
 
-        T IArgument.Accept<T>(IArgumentVisitor<T> visitor)
-        {
-            return visitor.Visit (this);
-        }
-    }
+    T IArgument.Accept<T>(IArgumentVisitor<T> visitor) => visitor.Visit(this);
 }

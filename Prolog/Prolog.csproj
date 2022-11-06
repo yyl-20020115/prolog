@@ -4,6 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
+    <LangVersion>Preview</LangVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{826279BE-DF24-4129-9E33-6472CA22D83F}</ProjectGuid>
     <OutputType>Library</OutputType>

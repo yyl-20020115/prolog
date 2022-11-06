@@ -2,48 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+public class Variables : IEnumerable <KeyValuePair <string, IConcreteValue>>
 {
-    public class Variables : IEnumerable <KeyValuePair <string, IConcreteValue>>
-    {
-        private readonly Dictionary <string, Variable> variables;
+    private readonly Dictionary <string, Variable> variables;
 
-        internal Variables (Dictionary <string, Variable> variables)
-        {
-            this.variables = variables;
-        }
+    internal Variables(Dictionary<string, Variable> variables) => this.variables = variables;
 
-        public IConcreteValue this [string variableName]
-        {
-            get
-            {
-                Variable variable;
+    public IConcreteValue this[string variableName] => variables.TryGetValue(variableName, out Variable variable) ? variable.ConcreteValue : null;
 
-                return variables.TryGetValue (variableName, out variable) ? variable.ConcreteValue : null;
-            }
-        }
+    public bool Contains(string variableName) => this.variables.ContainsKey(variableName);
 
-        public bool Contains (string variableName)
-        {
-            return this.variables.ContainsKey (variableName);
-        }
+    public IEnumerator<KeyValuePair<string, IConcreteValue>> GetEnumerator() => variables.ToDictionary(
+            variable => variable.Key,
+            variable => variable.Value.ConcreteValue)
+            .GetEnumerator();
 
-        public IEnumerator <KeyValuePair <string, IConcreteValue>> GetEnumerator()
-        {
-            return variables.ToDictionary(
-                variable => variable.Key, 
-                variable => variable.Value.ConcreteValue)
-                .GetEnumerator ();
-        }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public int Count
-        {
-            get {return this.variables.Count;}
-        }
-    }
+    public int Count => this.variables.Count;
 }

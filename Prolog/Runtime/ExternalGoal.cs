@@ -1,21 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+class ExternalGoal : Goal
 {
-    class ExternalGoal : Goal
-    {
-        private readonly ExternalPredicateDefinition impl;
+    private readonly ExternalPredicateDefinition impl;
 
-        public ExternalGoal (ExternalPredicateDefinition impl)
-        {
-            this.impl = impl;
-        }
+    public ExternalGoal(ExternalPredicateDefinition impl) => this.impl = impl;
 
-        protected override IEnumerable<Frame> GetFrames()
-        {
-            return impl (Arguments).Select (
-                boundVariables => new Frame (new Goal [0], this, boundVariables, new Dictionary <string, Variable> ()));
-        }
-    }
+    protected override IEnumerable<Frame> GetFrames() => impl(Arguments).Select(
+            boundVariables => new Frame(new Goal[0], this, boundVariables, new Dictionary<string, Variable>()));
 }

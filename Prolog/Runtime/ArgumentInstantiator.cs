@@ -1,38 +1,28 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+class ArgumentInstantiator : IArgumentVisitor <IValue>
 {
-    class ArgumentInstantiator : IArgumentVisitor <IValue>
+    private readonly Dictionary<string, Variable> variables = new();
+
+    public Dictionary<string, Variable> Variables => variables;
+
+    IValue IArgumentVisitor<IValue>.Visit(Prolog.Atom atom) => new Atom(atom.Name);
+
+    IValue IArgumentVisitor<IValue>.Visit(Prolog.Variable variableDef)
     {
-        private readonly Dictionary<string, Variable> variables = new Dictionary <string, Variable>();
-
-        public Dictionary <string, Variable> Variables
+        if (!variables.TryGetValue(variableDef.Name, out Variable variable))
         {
-            get { return variables; }
+            variable = new Variable(variableDef.Name);
+
+            variables.Add(variableDef.Name, variable);
         }
 
-        IValue IArgumentVisitor<IValue>.Visit(Prolog.Atom atom)
-        {
-            return new Atom (atom.Name);
-        }
-
-        IValue IArgumentVisitor<IValue>.Visit(Prolog.Variable variableDef)
-        {
-            Variable variable;
-            if (!variables.TryGetValue (variableDef.Name, out variable))
-            {
-                variable = new Variable (variableDef.Name);
-
-                variables.Add (variableDef.Name, variable);
-            }
-
-            return variable;
-        }
-
-        IValue IArgumentVisitor<IValue>.Visit(Prolog.List list)
-        {
-            return new List (list.Elements.Select (e => e.Accept(this)).ToArray());
-        }
+        return variable;
     }
+
+    IValue IArgumentVisitor<IValue>.Visit(Prolog.List list)
+        => new List(list.Elements.Select(e => e.Accept(this)).ToArray());
 }

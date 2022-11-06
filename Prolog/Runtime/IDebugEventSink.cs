@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace Prolog.Runtime;
 
-namespace Prolog.Runtime
+public interface IDebugEventSink
 {
-    public interface IDebugEventSink
-    {
-        void Visit(Solution solution);
+    void Visit(Solution solution);
 
-        void Visit(Enter enter);
+    void Visit(Enter enter);
 
-        void Visit(Leave leave);
-    }
+    void Visit(Leave leave);
 }

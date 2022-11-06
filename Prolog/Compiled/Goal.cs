@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Prolog.Compiled
-{
-    [Serializable]
-    public class Goal
-    {
-        public Predicate Predicate {get; set;}
+namespace Prolog.Compiled;
 
-        public IArgument [] Arguments {get; set;}
-    }
+[Serializable]
+public class Goal
+{
+    public Predicate Predicate;
+
+    public IArgument[] Arguments;
 }

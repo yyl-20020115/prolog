@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Prolog.Compiled
-{
-    [Serializable]
-    public class Clause
-    {
-        public Goal Head {get; set; }
+namespace Prolog.Compiled;
 
-        public Goal [] Body {get; set;}
-    }
+[Serializable]
+public class Clause
+{
+    public Goal Head;
+
+    public Goal[] Body;
 }

@@ -1,22 +1,18 @@
 ﻿using System;
 
-namespace Prolog
+namespace Prolog;
+
+[Serializable]
+public class Variable : IArgument
 {
-    [Serializable]
-    public class Variable : IArgument
+    public Variable () {}
+
+    public Variable (string name)
     {
-        public Variable () {}
-
-        public Variable (string name)
-        {
-            Name = name;
-        }
-
-        public string Name {get; set;}
-
-        T IArgument.Accept<T>(IArgumentVisitor<T> visitor)
-        {
-            return visitor.Visit (this);
-        }
+        Name = name;
     }
+
+    public string Name {get; set;}
+
+    T IArgument.Accept<T>(IArgumentVisitor<T> visitor) => visitor.Visit(this);
 }

@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+public interface ISolutionTreeNode : IEnumerable<ISolutionTreeNode>
 {
-    public interface ISolutionTreeNode : IEnumerable<ISolutionTreeNode>
-    {
-        Variables Variables {get;}
-        Goal HeadGoal { get; set; }
+    Variables Variables {get;}
+    Goal HeadGoal { get; set; }
 
-        ISolutionTreeNode this [string goalName] {get;}
-    }
+    ISolutionTreeNode this [string goalName] {get;}
 }

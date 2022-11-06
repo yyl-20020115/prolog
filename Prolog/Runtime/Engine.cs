@@ -1,139 +1,90 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+public interface IDebugEvent
 {
-    public interface IDebugEvent
+    void Accept (IDebugEventSink sink);
+}
+
+public class Solution : IDebugEvent
+{
+    readonly ISolutionTreeNode tree;
+
+    public Solution (ISolutionTreeNode tree)
     {
-        void Accept (IDebugEventSink sink);
+        this.tree = tree;
     }
 
-    public class Solution : IDebugEvent
+    public ISolutionTreeNode Tree => tree;
+
+    public void Accept(IDebugEventSink sink) => sink.Visit(this);
+}
+
+public class Enter : IDebugEvent
+{
+    readonly ISolutionTreeNode node;
+
+    public Enter (ISolutionTreeNode node)
     {
-        readonly ISolutionTreeNode tree;
-
-        public Solution (ISolutionTreeNode tree)
-        {
-            this.tree = tree;
-        }
-
-        public ISolutionTreeNode Tree
-        {
-            get { return tree; }
-        }
-
-        public void Accept(IDebugEventSink sink)
-        {
-            sink.Visit (this);
-        }
+        this.node = node;
     }
 
-    public class Enter : IDebugEvent
+    public ISolutionTreeNode Node => node;
+
+    public void Accept(IDebugEventSink sink) => sink.Visit(this);
+}
+
+public class Leave : IDebugEvent
+{
+    public Leave(ISolutionTreeNode node) => this.Node = node;
+
+    public ISolutionTreeNode Node { get; }
+
+    public void Accept(IDebugEventSink sink) => sink.Visit(this);
+}
+
+public class Engine : IDebugEventSink
+{
+    public event Action <Goal> Unified;
+    public event Action <Goal> Failed;
+    public event Action Start;
+
+    public IEnumerable <ISolutionTreeNode> Solve (Compiled.Goal [] goalDefs)
     {
-        readonly ISolutionTreeNode node;
+        solution = null;
 
-        public Enter (ISolutionTreeNode node)
+        Start?.Invoke();
+
+        var engine = new EngineInternals ();
+
+        foreach (var @event in engine.Solve (goalDefs))
         {
-            this.node = node;
-        }
+            @event.Accept (this);
 
-        public ISolutionTreeNode Node
-        {
-            get { return node; }
-        }
-
-        public void Accept(IDebugEventSink sink)
-        {
-            sink.Visit (this);
-        }
-    }
-
-    public class Leave : IDebugEvent
-    {
-        readonly ISolutionTreeNode node;
-
-        public Leave (ISolutionTreeNode node)
-        {
-            this.node = node;
-        }
-
-        public ISolutionTreeNode Node
-        {
-            get { return node; }
-        }
-
-        public void Accept(IDebugEventSink sink)
-        {
-            sink.Visit (this);
-        }
-    }
-
-    public class Engine : IDebugEventSink
-    {
-        public event Action <Goal> Unified;
-        public event Action <Goal> Failed;
-        public event Action Start;
-
-        public IEnumerable <ISolutionTreeNode> Solve (Compiled.Goal [] goalDefs)
-        {
-            solution = null;
-
-            if (Start != null)
+            if (solution != null)
             {
-                Start ();
-            }
+                yield return solution.Tree;
 
-            var engine = new EngineInternals ();
-
-            foreach (var @event in engine.Solve (goalDefs))
-            {
-                @event.Accept (this);
-
-                if (solution != null)
-                {
-                    yield return solution.Tree;
-
-                    solution = null;
-                }
+                solution = null;
             }
         }
-
-        public IEnumerable <ISolutionTreeNode> Run (Compiled.Program program)
-        {
-            return Solve (program.GetStartupGoal ());
-        }
-
-        Solution solution;
-
-        private void RaiseUnified (Goal goal)
-        {
-            if (Unified != null)
-            {
-                Unified (goal);
-            }
-        }
-
-        private void RaiseFailed (Goal goal)
-        {
-            if (Failed != null)
-            {
-                Failed (goal);
-            }
-        }
-
-        void IDebugEventSink.Visit (Solution newSolution)
-        {
-            this.solution = newSolution;
-        }
-
-        void IDebugEventSink.Visit (Enter enter)
-        {
-            RaiseUnified (enter.Node.HeadGoal);
-        }
-
-        void IDebugEventSink.Visit (Leave leave)
-        {
-            RaiseFailed (leave.Node.HeadGoal);
-        }
     }
+
+    public IEnumerable<ISolutionTreeNode> Run(Compiled.Program program) => Solve(program.GetStartupGoal());
+
+    Solution solution;
+
+    private void RaiseUnified (Goal goal)
+    => Unified?.Invoke(goal);
+
+    private void RaiseFailed (Goal goal)
+    => Failed?.Invoke(goal);
+
+    void IDebugEventSink.Visit(Solution newSolution) => this.solution = newSolution;
+
+    void IDebugEventSink.Visit(Enter enter) => RaiseUnified(enter.Node.HeadGoal);
+
+    void IDebugEventSink.Visit(Leave leave) => RaiseFailed(leave.Node.HeadGoal);
 }

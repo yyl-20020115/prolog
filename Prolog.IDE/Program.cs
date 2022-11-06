@@ -15,7 +15,8 @@ namespace Prolog.IDE
         {
             Compiled.Program program = GetProgram (args[0]);
 
-            var externalPredicates = new [] {Concat.GetConcat (), Lexer.GetLexer (new StringReader ("ордена ленина полк"))};
+            var externalPredicates = new [] {Concat.GetConcat (), Lexer.GetLexer (
+                new StringReader ("test"))};
 
             program.SetExternalPredicateCallbacks (externalPredicates);
 
@@ -25,7 +26,7 @@ namespace Prolog.IDE
 
             Application.EnableVisualStyles ();            
             Application.SetCompatibleTextRenderingDefault (false);
-            Application.Run (new Form1 (events));
+            Application.Run (new Form1(events));
         }
 
         private static Compiled.Program GetProgram (string fileName)

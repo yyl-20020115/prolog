@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Prolog.Compiled
-{
-    [Serializable]
-    public class PrologPredicate : Predicate
-    {
-        public IEnumerable<Clause> Clauses { get; set; }
+namespace Prolog.Compiled;
 
-        public override T Accept<T>(IPredicateVisitor<T> visitor)
-        {
-            return visitor.Visit (this);
-        }
-    }
+[Serializable]
+public class PrologPredicate : Predicate
+{
+    public IEnumerable<Clause> Clauses;
+
+    public override T Accept<T>(IPredicateVisitor<T> visitor) => visitor.Visit(this);
 }

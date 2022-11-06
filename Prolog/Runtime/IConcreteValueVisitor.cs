@@ -1,10 +1,9 @@
-﻿namespace Prolog.Runtime
-{
+﻿namespace Prolog.Runtime;
+
 // ReSharper disable TypeParameterCanBeVariant
-    public interface IConcreteValueVisitor <T>
+public interface IConcreteValueVisitor <T>
 // ReSharper restore TypeParameterCanBeVariant
-    {
-        T Visit (Atom atom);
-        T Visit (List list);
-    }
+{
+    T Visit (Atom atom);
+    T Visit (List list);
 }

@@ -3,137 +3,121 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+public class BoundVariableSet : IEnumerable <Variable>
 {
-    public class BoundVariableSet : IEnumerable <Variable>
+    private readonly List <Variable> boundVariables = new List <Variable> ();
+
+    public void Release ()
     {
-        private readonly List <Variable> boundVariables = new List <Variable> ();
-
-        public void Release ()
-        {
-            boundVariables.ForEach(v => v.BoundTo = null);
-            boundVariables.Clear();
-        }
-
-        public IEnumerator <Variable> GetEnumerator()
-        {
-            return boundVariables.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(Variable var)
-        {
-            boundVariables.Add(var);
-        }
-
-        public bool Unify(IValue lhs, IValue rhs)
-        {
-            bool success = lhs.Accept (new ValueUnifier(rhs, this));
-
-            if (!success)
-            {
-                Release ();
-            }
-
-            return success;
-        }
-
-        /// <summary>
-        /// Unifies two enumerables element-wise.
-        /// </summary>
-        /// <remarks>
-        /// The two collections can be of different lengths.
-        /// The shortest collection defines the number of elements getting unified.
-        /// If one collection is empty, unification will succeed; if this is not desired, 
-        /// lengths of collections must be checked before calling <see cref="ZipUnify"/>.
-        /// </remarks>
-        public bool ZipUnify (IEnumerable <IValue> hiList, IEnumerable <IValue> loList)
-        {
-            return hiList.Zip (loList, Unify).All (x => x);
-        }
-
-        public void Bind (Variable variable, IValue value)
-        {
-            variable.BoundTo = value;
-
-            Add (variable);
-        }
+        boundVariables.ForEach(v => v.BoundTo = null);
+        boundVariables.Clear();
     }
 
-    public interface IValueUnifier
+    public IEnumerator<Variable> GetEnumerator() => boundVariables.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator()
+    => GetEnumerator();
+
+    public void Add(Variable var) => boundVariables.Add(var);
+
+    public bool Unify(IValue lhs, IValue rhs)
     {
-        bool Visit (IConcreteValue lhsConcreteValue);
-        bool Visit (Variable lhsVariable);
+        bool success = lhs.Accept (new ValueUnifier(rhs, this));
+
+        if (!success)
+        {
+            Release ();
+        }
+
+        return success;
     }
 
-    class ValueUnifier : IValueUnifier
+    /// <summary>
+    /// Unifies two enumerables element-wise.
+    /// </summary>
+    /// <remarks>
+    /// The two collections can be of different lengths.
+    /// The shortest collection defines the number of elements getting unified.
+    /// If one collection is empty, unification will succeed; if this is not desired, 
+    /// lengths of collections must be checked before calling <see cref="ZipUnify"/>.
+    /// </remarks>
+    public bool ZipUnify (IEnumerable <IValue> hiList, IEnumerable <IValue> loList)
+    => hiList.Zip(loList, Unify).All(x => x);
+
+    public void Bind (Variable variable, IValue value)
     {
-        readonly BoundVariableSet boundVariables;
-        readonly IValue rhsValue;
+        variable.BoundTo = value;
 
-        public ValueUnifier (IValue rhsValue, BoundVariableSet boundVariables)
-        {
-            this.boundVariables = boundVariables;
-            this.rhsValue = rhsValue;
-        }
+        Add (variable);
+    }
+}
 
-        public bool Visit (IConcreteValue lhsConcreteValue)
-        {
-            return rhsValue.Accept (new LhsConcreteValueUnifier (lhsConcreteValue, boundVariables));
-        }
+public interface IValueUnifier
+{
+    bool Visit (IConcreteValue lhsConcreteValue);
+    bool Visit (Variable lhsVariable);
+}
 
-        public bool Visit (Variable lhsVariable)
-        {
-            if (lhsVariable.ConcreteValue == null)
-            {
-                lhsVariable.BoundTo = rhsValue;
+class ValueUnifier : IValueUnifier
+{
+    readonly BoundVariableSet boundVariables;
+    readonly IValue rhsValue;
 
-                boundVariables.Add (lhsVariable);
-
-                return true;
-            }
-
-            return rhsValue.Accept (new LhsConcreteValueUnifier (lhsVariable.ConcreteValue, boundVariables));
-        }
+    public ValueUnifier (IValue rhsValue, BoundVariableSet boundVariables)
+    {
+        this.boundVariables = boundVariables;
+        this.rhsValue = rhsValue;
     }
 
-    class LhsConcreteValueUnifier : IValueUnifier
+    public bool Visit(IConcreteValue lhsConcreteValue) => rhsValue.Accept(new LhsConcreteValueUnifier(lhsConcreteValue, boundVariables));
+
+    public bool Visit (Variable lhsVariable)
     {
-        private readonly IConcreteValue lhsConcreteValue;
-        private readonly BoundVariableSet boundVariables;
-
-        public LhsConcreteValueUnifier(IConcreteValue lhsConcreteValue, BoundVariableSet boundVariables)
+        if (lhsVariable.ConcreteValue == null)
         {
-            this.lhsConcreteValue = lhsConcreteValue;
-            this.boundVariables = boundVariables;
+            lhsVariable.BoundTo = rhsValue;
+
+            boundVariables.Add (lhsVariable);
+
+            return true;
         }
 
-        public bool Visit (IConcreteValue rhsConcreteValue)
+        return rhsValue.Accept (new LhsConcreteValueUnifier (lhsVariable.ConcreteValue, boundVariables));
+    }
+}
+
+class LhsConcreteValueUnifier : IValueUnifier
+{
+    private readonly IConcreteValue lhsConcreteValue;
+    private readonly BoundVariableSet boundVariables;
+
+    public LhsConcreteValueUnifier(IConcreteValue lhsConcreteValue, BoundVariableSet boundVariables)
+    {
+        this.lhsConcreteValue = lhsConcreteValue;
+        this.boundVariables = boundVariables;
+    }
+
+    public bool Visit (IConcreteValue rhsConcreteValue)
+    => lhsConcreteValue.Accept(new Unifier(rhsConcreteValue, boundVariables));
+
+    public bool Visit (Variable rhsVariable)
+    {
+        if (rhsVariable.BoundTo == null)
         {
-            return lhsConcreteValue.Accept (new Unifier (rhsConcreteValue, boundVariables));
+            rhsVariable.BoundTo = lhsConcreteValue;
+
+            boundVariables.Add (rhsVariable);
+
+            return true;
         }
 
-        public bool Visit (Variable rhsVariable)
+        if (rhsVariable.ConcreteValue == null)
         {
-            if (rhsVariable.BoundTo == null)
-            {
-                rhsVariable.BoundTo = lhsConcreteValue;
-
-                boundVariables.Add (rhsVariable);
-
-                return true;
-            }
-
-            if (rhsVariable.ConcreteValue == null)
-            {
-                throw new Exception ();
-            }
-
-            return lhsConcreteValue.Accept (new Unifier (rhsVariable.ConcreteValue, boundVariables));
+            throw new Exception ();
         }
+
+        return lhsConcreteValue.Accept (new Unifier (rhsVariable.ConcreteValue, boundVariables));
     }
 }

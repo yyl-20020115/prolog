@@ -1,7 +1,6 @@
-﻿namespace Prolog.Runtime
+﻿namespace Prolog.Runtime;
+
+public interface IConcreteValue : IValue
 {
-    public interface IConcreteValue : IValue
-    {
-        T Accept<T> (IConcreteValueVisitor<T> visitor);
-    }
+    T Accept<T> (IConcreteValueVisitor<T> visitor);
 }

@@ -3,114 +3,91 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Prolog.Runtime
+namespace Prolog.Runtime;
+
+public class Frame : ISolutionTreeNode
 {
-    public class Frame : ISolutionTreeNode
+    private readonly Goal [] goals;
+    private BoundVariableSet boundVariables;
+    private readonly Variables variables;
+
+    public Frame (Goal [] goals, Goal parent, BoundVariableSet boundVariables, Dictionary <string, Variable> variables)
     {
-        private readonly Goal [] goals;
-        private BoundVariableSet boundVariables;
-        private readonly Variables variables;
+        this.goals = goals;
+        this.boundVariables = boundVariables;
+        this.HeadGoal = parent;
 
-        public Frame (Goal [] goals, Goal parent, BoundVariableSet boundVariables, Dictionary <string, Variable> variables)
+        this.variables = new Variables(variables);
+
+        foreach (var goal in goals)
         {
-            this.goals = goals;
-            this.boundVariables = boundVariables;
-            this.HeadGoal = parent;
+            goal.Frame = this;
+        }
+    }
 
-            this.variables = new Variables(variables);
+    public Goal CurrentGoal => this.GoalsProven < this.goals.Length ? this.goals[this.GoalsProven] : null;
 
-            foreach (var goal in goals)
+    public int GoalsProven;
+
+    public Frame Parent => HeadGoal == null ? null : HeadGoal.Frame;
+
+    public IEnumerable <Frame> ParentFrames
+    {
+        get
+        {
+            var frame = Parent;
+
+            while (frame != null)
             {
-                goal.Frame = this;
+                yield return frame;
+
+                frame = frame.Parent;
             }
         }
+    }
 
-        public Goal CurrentGoal
+    public Goal HeadGoal
+    {
+        get; set;
+    }
+
+    public Goal[] Goals => goals;
+
+    public void ReleaseVariables()
+    {
+        boundVariables.Release ();
+        boundVariables = null; // to prevent ReleaseVariables from being called twice.
+    }
+
+    public int Level => ParentFrames.Count();
+
+    Variables ISolutionTreeNode.Variables => variables;
+
+    ISolutionTreeNode ISolutionTreeNode.this [string goalName]
+    {
+        get
         {
-            get { return this.GoalsProven < this.goals.Length ? this.goals [this.GoalsProven] : null; }
-        }
+            var matches = goals.OfType<PrologGoal>().Where(g => g.Predicate.Name == goalName).ToArray();
 
-        public int GoalsProven;
-
-        public Frame Parent
-        {
-            get { return HeadGoal == null ? null : HeadGoal.Frame; }
-        }
-
-        public IEnumerable <Frame> ParentFrames
-        {
-            get
+            return matches.Length switch
             {
-                var frame = Parent;
-
-                while (frame != null)
-                {
-                    yield return frame;
-
-                    frame = frame.Parent;
-                }
-            }
+                1 => matches.Single().CurrentFrame,
+                0 => null,
+                _ => throw new Exception(),
+            };
         }
+    }
 
-        public Goal HeadGoal
-        {
-            get; set;
-        }
+    public IEnumerator<ISolutionTreeNode> GetEnumerator() => this.goals.Select(g => g.CurrentFrame).GetEnumerator();
 
-        public Goal [] Goals
-        {
-            get { return goals; }
-        }
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public void ReleaseVariables()
-        {
-            boundVariables.Release ();
-            boundVariables = null; // to prevent ReleaseVariables from being called twice.
-        }
+    public override string ToString()
+    {
+        var builder = new StringBuilder ();
 
-        public int Level
-        {
-            get { return ParentFrames.Count (); }
-        }
+        SolutionTreePrinter.Print (builder, this);
 
-        Variables ISolutionTreeNode.Variables
-        {
-            get { return variables; }
-        }
-
-        ISolutionTreeNode ISolutionTreeNode.this [string goalName]
-        {
-            get
-            {
-                var matches = goals.OfType<PrologGoal>().Where(g => g.Predicate.Name == goalName).ToArray();
-
-                switch (matches.Length)
-                {
-                    case 1: return matches.Single().CurrentFrame;
-                    case 0: return null;
-                }
-
-                throw new Exception();
-            }
-        }
-
-        public IEnumerator<ISolutionTreeNode> GetEnumerator()
-        {
-            return this.goals.Select(g => g.CurrentFrame).GetEnumerator ();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator ();
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder ();
-
-            SolutionTreePrinter.Print (sb, this);
-
-            return sb.ToString ();
-        }
+        return builder.ToString ();
     }
 }

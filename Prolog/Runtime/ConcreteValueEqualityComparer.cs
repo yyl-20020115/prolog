@@ -1,51 +1,37 @@
-﻿namespace Prolog.Runtime
+﻿namespace Prolog.Runtime;
+
+class ConcreteValueEqualityComparer : IConcreteValueVisitor<bool>
 {
-    class ConcreteValueEqualityComparer : IConcreteValueVisitor<bool>
-    {
-        private readonly IConcreteValue a1;
+    private readonly IConcreteValue a1;
 
-        public ConcreteValueEqualityComparer(IConcreteValue a1)
-        {
-            this.a1 = a1;
-        }
+    public ConcreteValueEqualityComparer(IConcreteValue a1) => this.a1 = a1;
 
-        bool IConcreteValueVisitor<bool>.Visit(Atom rhs)
-        {
-            var lhs = a1 as Atom;
+    bool IConcreteValueVisitor<bool>.Visit(Atom rhs) => a1 is Atom lhs && lhs.Name == rhs.Name;
 
-            return lhs != null && lhs.Name == rhs.Name;
-        }
+    bool IConcreteValueVisitor<bool>.Visit(List rhs) => a1 is List lhs && AreEqual(lhs, rhs);
 
-        bool IConcreteValueVisitor<bool>.Visit(List rhs)
-        {
-            var lhs = a1 as List;
-
-            return lhs != null && AreEqual (lhs, rhs);
-        }
-
-// ReSharper disable ParameterTypeCanBeEnumerable.Local
-        private static bool AreEqual(List lhs, List rhs)
+    // ReSharper disable ParameterTypeCanBeEnumerable.Local
+    private static bool AreEqual(List lhs, List rhs)
 // ReSharper restore ParameterTypeCanBeEnumerable.Local
+    {
+        var e1 = lhs.GetEnumerator ();
+        var e2 = rhs.GetEnumerator ();
+
+        while (true)
         {
-            var e1 = lhs.GetEnumerator ();
-            var e2 = rhs.GetEnumerator ();
+            bool more1 = e1.MoveNext ();
+            bool more2 = e2.MoveNext ();
 
-            while (true)
+            if (more1 && more2)
             {
-                bool more1 = e1.MoveNext ();
-                bool more2 = e2.MoveNext ();
-
-                if (more1 && more2)
+                if (!EngineInternals.AreEqual (e1.Current, e2.Current))
                 {
-                    if (!EngineInternals.AreEqual (e1.Current, e2.Current))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-                else
-                {
-                    return more1 == more2; // lists are of same length
-                }
+            }
+            else
+            {
+                return more1 == more2; // lists are of same length
             }
         }
     }
