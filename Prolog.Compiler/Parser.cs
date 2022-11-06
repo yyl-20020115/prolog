@@ -193,7 +193,7 @@ public class Parser
 
     static IEnumerable <Runtime.BoundVariableSet> IsUpperCase (Runtime.IValue [] arguments)
     {
-        string name = ((Runtime.Atom) arguments [0].ConcreteValue).Name;
+        var name = ((Runtime.Atom) arguments [0].ConcreteValue).Name;
 
         if (name.All (Lexer.IsWordChar) && char.IsUpper (name [0]))
         {
@@ -203,7 +203,7 @@ public class Parser
 
     static IEnumerable <Runtime.BoundVariableSet> IsLowerCase (Runtime.IValue [] arguments)
     {
-        string name = ((Runtime.Atom) arguments [0].ConcreteValue).Name;
+        var name = ((Runtime.Atom) arguments [0].ConcreteValue).Name;
 
         if (name.All (Lexer.IsWordChar) && char.IsLower (name [0]))
         {

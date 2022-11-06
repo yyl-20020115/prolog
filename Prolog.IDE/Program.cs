@@ -35,14 +35,10 @@ static class Program
         Application.Run (new MainForm(events));
     }
 
-    private static Compiled.Program GetProgram (string fileName)
-    {
-        var externalPredicateDeclarations = new []
-                                                {
-                                                    Concat.GetConcat().Key,
-                                                    Lexer.GetExternalPredicateDeclaration ()
-                                                };
-
-        return new Compiler ().Compile (fileName, externalPredicateDeclarations);
-    }
+    private static Compiled.Program GetProgram(string fileName) 
+        => new Compiler().Compile(fileName, new[]
+        {
+            Concat.GetConcat().Key,
+            Lexer.GetExternalPredicateDeclaration ()
+        });
 }

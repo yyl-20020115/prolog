@@ -26,12 +26,8 @@ public class Compiler
         return Compile (program);
     }
 
-    public static IEnumerable <Runtime.ISolutionTreeNode> Solve (Runtime.Engine engine, AST.Goal [] goals, Compiled.Program program)
-    {
-        Compiled.Goal[] compiledGoals = Compile (goals, program.predicatesByName);
-
-        return engine.Solve (compiledGoals);
-    }
+    public static IEnumerable<Runtime.ISolutionTreeNode> Solve(Runtime.Engine engine, AST.Goal[] goals, Compiled.Program program)
+        => engine.Solve(Compile(goals, program.predicatesByName));
 
     private static AST.Clause DcgClauseToNormalClause (AST.DcgClause dcgClause)
     {
@@ -97,8 +93,10 @@ public class Compiler
         return new Compiled.Program (predicates);
     }
 
-    private static Compiled.Predicate CastPrologPredicateToBasePredicate(KeyValuePair<Tuple<string, int>, Compiled.PrologPredicate> p) => p.Value;
+    private static Compiled.Predicate CastPrologPredicateToBasePredicate(KeyValuePair<Tuple<string, int>, Compiled.PrologPredicate> p) 
+        => p.Value;
 
     // ReSharper disable ParameterTypeCanBeEnumerable.Local
-    private static Compiled.Goal[] Compile(AST.Goal[] goals, IDictionary<Tuple<string, int>, Compiled.Predicate> predicatesByName) => goals.Select(g => new Compiled.Goal { Predicate = predicatesByName[Tuple.Create(g.PredicateName, g.Arguments.Length)], Arguments = g.Arguments }).ToArray();
+    private static Compiled.Goal[] Compile(AST.Goal[] goals, IDictionary<Tuple<string, int>, Compiled.Predicate> predicatesByName) 
+        => goals.Select(g => new Compiled.Goal { Predicate = predicatesByName[Tuple.Create(g.PredicateName, g.Arguments.Length)], Arguments = g.Arguments }).ToArray();
 }

@@ -40,5 +40,5 @@ class DcgGoalConverter : IDcgGoalVisitor<Goal>
     };
 
     Goal IDcgGoalVisitor<Goal>.Visit (DcgNonDcgGoal goal)
-    => goal;
+        => goal;
 }

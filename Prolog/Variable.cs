@@ -7,10 +7,7 @@ public class Variable : IArgument
 {
     public Variable () {}
 
-    public Variable (string name)
-    {
-        Name = name;
-    }
+    public Variable(string name) => Name = name;
 
     public string Name {get; set;}
 
