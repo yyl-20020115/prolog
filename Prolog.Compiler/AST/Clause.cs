@@ -1,9 +1,8 @@
-﻿namespace Prolog.AST
-{
-    public class Clause
-    {
-        public Goal Head {get; set;}
+﻿namespace Prolog.AST;
 
-        public Goal [] Body {get; set;}
-    }
+public class Clause
+{
+    public Goal Head;
+
+    public Goal[] Body;
 }

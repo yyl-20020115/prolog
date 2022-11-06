@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prolog", "Prolog\Prolog.csproj", "{826279BE-DF24-4129-9E33-6472CA22D83F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prolog.Tests", "Prolog.Tests\Prolog.Tests.csproj", "{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6303F801-FD56-411D-AB92-EE6B3BAD3EE6}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,9 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prolog.IDE", "Prolog.IDE\Prolog.IDE.csproj", "{C73434E6-EF5B-4192-8B23-B537937AFF2B}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Prolog.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -39,16 +36,6 @@ Global
 		{826279BE-DF24-4129-9E33-6472CA22D83F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{826279BE-DF24-4129-9E33-6472CA22D83F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{826279BE-DF24-4129-9E33-6472CA22D83F}.Release|x86.ActiveCfg = Release|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{B3C77BA1-3699-4110-A97F-E8DBB4ABE004}.Release|x86.ActiveCfg = Release|Any CPU
 		{CC8E6F33-9A58-4CE7-BAFF-B597DA841709}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC8E6F33-9A58-4CE7-BAFF-B597DA841709}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC8E6F33-9A58-4CE7-BAFF-B597DA841709}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -72,5 +59,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00FD6434-7129-452C-BD51-78EF98DB3411}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Prolog.vsmdi
 	EndGlobalSection
 EndGlobal

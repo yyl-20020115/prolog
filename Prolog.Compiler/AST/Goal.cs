@@ -1,9 +1,8 @@
-﻿namespace Prolog.AST
-{
-    public class Goal
-    {
-        public string PredicateName {get; set;}
+﻿namespace Prolog.AST;
 
-        public IArgument [] Arguments {get; set;}
-    }
+public class Goal
+{
+    public string PredicateName;
+
+    public IArgument[] Arguments;
 }

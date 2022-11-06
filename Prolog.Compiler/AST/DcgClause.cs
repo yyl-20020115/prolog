@@ -1,9 +1,7 @@
-﻿namespace Prolog.AST
-{
-    public class DcgClause
-    {
-        public Goal Head {get; set;}
+﻿namespace Prolog.AST;
 
-        public IDcgGoal [] Body {get; set;}
-    }
+public class DcgClause
+{
+    public Goal Head;
+    public IDcgGoal[] Body;
 }
