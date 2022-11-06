@@ -7,7 +7,8 @@ public class EngineInternals
 {
     Frame frame;
 
-    public IEnumerable<IDebugEvent> Run(Compiled.Program program) => Solve(program.GetStartupGoal());
+    public IEnumerable<IDebugEvent> Run(Compiled.Program program) 
+        => Solve(program.GetStartupGoal());
 
     public IEnumerable <IDebugEvent> Solve (Compiled.Goal [] goalDefs)
     {
@@ -130,24 +131,17 @@ public class EngineInternals
             && arguments [arguments.Length-2] is List;
     }
 
-    static bool AreEqual (Goal goal1, Goal goal2)
-    {
-        return goal1.Definition.Predicate == goal2.Definition.Predicate
-               && goal1.Arguments.Zip (goal2.Arguments, AreEqual).All(x => x);
-    }
+    static bool AreEqual(Goal goal1, Goal goal2) 
+        => goal1.Definition.Predicate == goal2.Definition.Predicate
+               && goal1.Arguments.Zip(goal2.Arguments, AreEqual).All(x => x);
 
-    internal static bool AreEqual (IValue a1, IValue a2)
-    {
-        return (a1.ConcreteValue == null == (a2.ConcreteValue == null))
-               && ((a2.ConcreteValue == null) || a2.ConcreteValue.Accept (new ConcreteValueEqualityComparer (a1.ConcreteValue)));
-    }
+    internal static bool AreEqual(IValue a1, IValue a2) 
+        => (a1.ConcreteValue == null == (a2.ConcreteValue == null))
+               && ((a2.ConcreteValue == null) || a2.ConcreteValue.Accept(new ConcreteValueEqualityComparer(a1.ConcreteValue)));
 
-// ReSharper disable ParameterTypeCanBeEnumerable.Global
-    internal static Goal [] InstantiateGoals (Compiled.Goal [] goalDefs, ArgumentInstantiator argumentInstantiator)
-// ReSharper restore ParameterTypeCanBeEnumerable.Global
-    {
-        return goalDefs.Select (goalDef => CreateGoal (argumentInstantiator, goalDef)).ToArray ();
-    }
+    // ReSharper disable ParameterTypeCanBeEnumerable.Global
+    internal static Goal[] InstantiateGoals(Compiled.Goal[] goalDefs, ArgumentInstantiator argumentInstantiator)
+        => goalDefs.Select(goalDef => CreateGoal(argumentInstantiator, goalDef)).ToArray();
 
     private static Goal CreateGoal (ArgumentInstantiator visitor, Compiled.Goal goalDef)
     {

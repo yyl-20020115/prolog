@@ -1,23 +1,18 @@
 ﻿using System.Linq;
+using System.Text;
 
 namespace Prolog.Runtime;
 
 public class SolutionTreePrinter
 {
-    public delegate void NodePrinter (System.Text.StringBuilder sb, ISolutionTreeNode node);
+    public delegate void NodePrinter (StringBuilder builder, ISolutionTreeNode node);
 
     private readonly NodePrinter nodePrinter;
-    private readonly System.Text.StringBuilder sb = new ();
+    private readonly StringBuilder builder = new ();
 
-    private SolutionTreePrinter()
-    {
-        nodePrinter = PrintNode;
-    }
+    private SolutionTreePrinter() => nodePrinter = PrintNode;
 
-    public SolutionTreePrinter (NodePrinter nodePrinter)
-    {
-        this.nodePrinter = nodePrinter;
-    }
+    public SolutionTreePrinter (NodePrinter nodePrinter) => this.nodePrinter = nodePrinter;
 
     public static string SolutionTreeToString(ISolutionTreeNode solution) => new SolutionTreePrinter().Print(solution);
 
@@ -25,7 +20,7 @@ public class SolutionTreePrinter
     {
         SolutionTreeToString (solution, 0);
 
-        return sb.ToString ();
+        return builder.ToString ();
     }
 
 // ReSharper disable ParameterTypeCanBeEnumerable.Local
@@ -34,13 +29,13 @@ public class SolutionTreePrinter
     {
         foreach (var node in solution)
         {
-            string s = NodeToString (node);
+            var s = NodeToString (node);
 
             if (!string.IsNullOrWhiteSpace (s))
             {
-                sb.Append (new string (' ', level * 4));
+                builder.Append (new string (' ', level * 4));
 
-                sb.AppendLine (s);
+                builder.AppendLine (s);
             }
 
             SolutionTreeToString (node, level + 1);
@@ -49,22 +44,22 @@ public class SolutionTreePrinter
 
     string NodeToString (ISolutionTreeNode node)
     {
-        var stringBuilder = new System.Text.StringBuilder ();
+        var stringBuilder = new StringBuilder ();
 
         nodePrinter (stringBuilder, node);
 
         return stringBuilder.ToString ();
     }
 
-    static void PrintNode (System.Text.StringBuilder stringBuilder, ISolutionTreeNode node)
+    static void PrintNode (StringBuilder stringBuilder, ISolutionTreeNode node)
     {
         Print (stringBuilder, node);
     }
 
-    public static void PrintDcgNode (System.Text.StringBuilder stringBuilder, ISolutionTreeNode node)
+    public static void PrintDcgNode (StringBuilder stringBuilder, ISolutionTreeNode node)
     {
-        Goal goal = node.HeadGoal;
-        string predicate = goal.Definition.Predicate.Name;
+        var goal = node.HeadGoal;
+        var predicate = goal.Definition.Predicate.Name;
         if (predicate != "concat")
         {
             stringBuilder.Append (predicate);
@@ -74,12 +69,12 @@ public class SolutionTreePrinter
         }
     }
 
-    public static void Print (System.Text.StringBuilder sb, ISolutionTreeNode frame)
+    public static void Print (StringBuilder sb, ISolutionTreeNode frame)
     {
         Print (frame.HeadGoal, sb);
     }
 
-    public static void Print (Goal goal, System.Text.StringBuilder sb)
+    public static void Print (Goal goal, StringBuilder sb)
     {
         sb.Append (goal.Definition.Predicate.Name);
         sb.Append ("(");

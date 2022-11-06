@@ -7,9 +7,11 @@ class PrologGoal : Goal
 {
     private readonly Compiled.PrologPredicate predicate;
 
-    public PrologGoal(Compiled.PrologPredicate predicate) => this.predicate = predicate;
+    public PrologGoal(Compiled.PrologPredicate predicate)
+        => this.predicate = predicate;
 
-    protected override IEnumerable<Frame> GetFrames() => this.Predicate.Clauses.Select(Unify).Where(f => f != null);
+    protected override IEnumerable<Frame> GetFrames()
+        => this.Predicate.Clauses?.Select(Unify).Where(f => f != null);
 
     Frame Unify (Compiled.Clause clause)
     {
@@ -20,7 +22,7 @@ class PrologGoal : Goal
 
         if (boundVariables.ZipUnify (Arguments, clauseHeadArguments))
         {
-            Goal [] goals = EngineInternals.InstantiateGoals (clause.Body, argumentInstantiator);
+            var goals = EngineInternals.InstantiateGoals (clause.Body, argumentInstantiator);
 
             return new Frame (goals, this, boundVariables, argumentInstantiator.Variables);
         }

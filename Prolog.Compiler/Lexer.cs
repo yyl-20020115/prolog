@@ -11,10 +11,7 @@ public class Lexer
 {
     private readonly TextReader textReader;
 
-    private Lexer (TextReader textReader)
-    {
-        this.textReader = textReader;
-    }
+    private Lexer(TextReader textReader) => this.textReader = textReader;
 
     private IEnumerable <BoundVariableSet> GetOutput (IValue [] arguments)
     {
@@ -59,7 +56,7 @@ public class Lexer
                     word.Clear ();
                 }
 
-                if (! Char.IsWhiteSpace (c))
+                if (!char.IsWhiteSpace(c))
                 {
                     yield return c.ToString ();
                 }
@@ -68,11 +65,11 @@ public class Lexer
 
     }
 
-    public static bool IsWordChar(char c) => Char.IsLetterOrDigit(c) || c == '_';
+    public static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
 
-    public static KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition> GetLexer(TextReader input) => new KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition>(
+    public static KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition> GetLexer(TextReader input) => new(
             GetExternalPredicateDeclaration(),
             new Lexer(input).GetOutput);
 
-    public static ExternalPredicateDeclaration GetExternalPredicateDeclaration() => new ExternalPredicateDeclaration("get_lexer_output", 1);
+    public static ExternalPredicateDeclaration GetExternalPredicateDeclaration() => new("get_lexer_output", 1);
 }

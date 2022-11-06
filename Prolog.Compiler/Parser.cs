@@ -24,17 +24,15 @@ public class Parser
 
     static Compiled.Program LoadProgramFromResource ()
     {
-        using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Prolog.Grammar.bin");
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Prolog.Grammar.bin");
         // ReSharper disable AssignNullToNotNullAttribute
-        var program = (Compiled.Program)new BinaryFormatter().Deserialize(stream);
-        return program;
+        return (Compiled.Program)new BinaryFormatter().Deserialize(stream);
         // ReSharper restore AssignNullToNotNullAttribute
     }
 
     private static AST.Program ConvertToAst(Runtime.ISolutionTreeNode unnamed_top_node)
     {
         var clause_nodes = ParsePossiblyEmptyList (unnamed_top_node ["run"] ["program"], "clause_list", "clause");
-
         var dcgClauses = new List <AST.DcgClause> ();
         var prologClauses = new List <AST.Clause> ();
 
@@ -84,10 +82,7 @@ public class Parser
         };
     }
 
-    private static string ToString (Runtime.IConcreteValue value)
-    {
-        return value.Accept (new Runtime.ArgumentPrinter());
-    }
+    private static string ToString(Runtime.IConcreteValue value) => value.Accept(new Runtime.ArgumentPrinter());
 
     private static AST.IDcgGoal DcgGoalToAst(Runtime.ISolutionTreeNode node)
     {
@@ -130,19 +125,14 @@ public class Parser
         throw new Exception ("Unrecognized DCG goal.");
     }
 
-    private static AST.Goal GoalToAst (Runtime.ISolutionTreeNode goal_node)
+    private static AST.Goal GoalToAst(Runtime.ISolutionTreeNode goal_node) => new()
     {
-        return new AST.Goal 
-        {
-            PredicateName = ToString (goal_node ["lowercase"].Variables ["Name"]),
-            Arguments = ParseArgumentList (goal_node)
-        };
-    }
+        PredicateName = ToString(goal_node["lowercase"].Variables["Name"]),
+        Arguments = ParseArgumentList(goal_node)
+    };
 
     private static IArgument [] ParseArgumentList (Runtime.ISolutionTreeNode goal_node)
-    {
-        return ParsePossiblyEmptyList (goal_node, "arg_list", "arg").Select (ArgumentToAst).ToArray ();
-    }
+        => ParsePossiblyEmptyList(goal_node, "arg_list", "arg").Select(ArgumentToAst).ToArray();
 
     private static IArgument ArgumentToAst(Runtime.ISolutionTreeNode arg_node)
     {
@@ -190,27 +180,22 @@ public class Parser
         }
     }
 
-    public static KeyValuePair <ExternalPredicateDeclaration, ExternalPredicateDefinition> [] GetExternalPredicates (TextReader input)
-    {
-        return new [] 
+    public static KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition>[] GetExternalPredicates(TextReader input) => new[]
                    {
                        Concat.GetConcat (),
                        Lexer.GetLexer (input),
-                       new KeyValuePair <ExternalPredicateDeclaration, ExternalPredicateDefinition> (new ExternalPredicateDeclaration ("is_uppercase", 1), IsUpperCase),
-                       new KeyValuePair <ExternalPredicateDeclaration, ExternalPredicateDefinition> (new ExternalPredicateDeclaration ("is_lowercase", 1), IsLowerCase)
+                       new (new ("is_uppercase", 1), IsUpperCase),
+                       new (new ("is_lowercase", 1), IsLowerCase)
                    };
-    }
 
-    public static ExternalPredicateDeclaration [] GetExternalPredicateDeclarations ()
-    {
-        return GetExternalPredicates (null).Select (kvp => kvp.Key).ToArray ();
-    }
+    public static ExternalPredicateDeclaration[] GetExternalPredicateDeclarations()
+        => GetExternalPredicates(null).Select(kvp => kvp.Key).ToArray();
 
     static IEnumerable <Runtime.BoundVariableSet> IsUpperCase (Runtime.IValue [] arguments)
     {
         string name = ((Runtime.Atom) arguments [0].ConcreteValue).Name;
 
-        if (name.All (Lexer.IsWordChar) && Char.IsUpper (name [0]))
+        if (name.All (Lexer.IsWordChar) && char.IsUpper (name [0]))
         {
             yield return new Runtime.BoundVariableSet ();
         }
@@ -220,7 +205,7 @@ public class Parser
     {
         string name = ((Runtime.Atom) arguments [0].ConcreteValue).Name;
 
-        if (name.All (Lexer.IsWordChar) && Char.IsLower (name [0]))
+        if (name.All (Lexer.IsWordChar) && char.IsLower (name [0]))
         {
             yield return new Runtime.BoundVariableSet ();
         }

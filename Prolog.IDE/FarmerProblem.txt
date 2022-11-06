@@ -1,0 +1,5 @@
+﻿likes(a,b).
+likes(a,c).
+likes(b,a).
+
+likes(a,X).

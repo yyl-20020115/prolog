@@ -13,9 +13,15 @@ static class Program
     [STAThread]
     static void Main(string [] args)
     {
+        if(args.Length == 0 || !File.Exists(args[0]))
+        {
+            MessageBox.Show("Unable to open file!");
+            return;
+        }
         Compiled.Program program = GetProgram (args[0]);
 
-        var externalPredicates = new [] {Concat.GetConcat (), Lexer.GetLexer (
+        var externalPredicates = new [] {
+            Concat.GetConcat (), Lexer.GetLexer (
             new StringReader ("test"))};
 
         program.SetExternalPredicateCallbacks (externalPredicates);

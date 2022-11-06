@@ -15,7 +15,7 @@ public abstract class Goal
         return frameEnumerator.MoveNext () ? CurrentFrame : null;
     }
 
-    internal Frame CurrentFrame => frameEnumerator.Current;
+    internal Frame CurrentFrame => frameEnumerator?.Current;
 
     /// <summary>
     /// The frame that contains this goal and other sibling goals.
@@ -43,7 +43,7 @@ public abstract class Goal
             CurrentFrame.ReleaseVariables();
         }
 
-        frameEnumerator = GetFrames ().GetEnumerator ();
+        frameEnumerator = GetFrames ()?.GetEnumerator ();
     }
 
     protected abstract IEnumerable<Frame> GetFrames();

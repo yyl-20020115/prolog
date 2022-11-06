@@ -2,8 +2,7 @@
 
 public class Variable : IValue
 {
-    public Variable (string name)
-    => this.Name = name;
+    public Variable (string name) => this.Name = name;
 
     private IValue boundTo;
     public IValue BoundTo
@@ -12,14 +11,11 @@ public class Variable : IValue
         set { boundTo = value; }
     }
 
-    T IValue.Accept<T>(IValueVisitor<T> visitor)
-    {
-        return visitor.Visit (this);
-    }
+    T IValue.Accept<T>(IValueVisitor<T> visitor) => visitor.Visit(this);
 
     public string Name {get; private set; }
 
-    public IConcreteValue ConcreteValue => BoundTo == null ? null : BoundTo.ConcreteValue;
+    public IConcreteValue ConcreteValue => BoundTo?.ConcreteValue;
 
 
     bool IValue.Accept(IValueUnifier visitor) => visitor.Visit(this);

@@ -52,5 +52,6 @@ public static class Concat
         // Must be a List, otherwise throws.
         (Runtime.List)value.ConcreteValue;
 
-    public static KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition> GetConcat() => new KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition>(new ExternalPredicateDeclaration("concat", 3), BindVariables);
+    public static KeyValuePair<ExternalPredicateDeclaration, ExternalPredicateDefinition> GetConcat() => 
+        new (new ("concat", 3), BindVariables);
 }

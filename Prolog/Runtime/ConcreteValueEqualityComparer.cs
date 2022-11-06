@@ -19,8 +19,8 @@ class ConcreteValueEqualityComparer : IConcreteValueVisitor<bool>
 
         while (true)
         {
-            bool more1 = e1.MoveNext ();
-            bool more2 = e2.MoveNext ();
+            var more1 = e1.MoveNext ();
+            var more2 = e2.MoveNext ();
 
             if (more1 && more2)
             {

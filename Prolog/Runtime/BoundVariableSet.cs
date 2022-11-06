@@ -7,7 +7,7 @@ namespace Prolog.Runtime;
 
 public class BoundVariableSet : IEnumerable <Variable>
 {
-    private readonly List <Variable> boundVariables = new List <Variable> ();
+    private readonly List <Variable> boundVariables = new ();
 
     public void Release ()
     {
@@ -18,7 +18,7 @@ public class BoundVariableSet : IEnumerable <Variable>
     public IEnumerator<Variable> GetEnumerator() => boundVariables.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator()
-    => GetEnumerator();
+        => GetEnumerator();
 
     public void Add(Variable var) => boundVariables.Add(var);
 
@@ -44,7 +44,7 @@ public class BoundVariableSet : IEnumerable <Variable>
     /// lengths of collections must be checked before calling <see cref="ZipUnify"/>.
     /// </remarks>
     public bool ZipUnify (IEnumerable <IValue> hiList, IEnumerable <IValue> loList)
-    => hiList.Zip(loList, Unify).All(x => x);
+        => hiList.Zip(loList, Unify).All(x => x);
 
     public void Bind (Variable variable, IValue value)
     {
@@ -100,7 +100,7 @@ class LhsConcreteValueUnifier : IValueUnifier
     }
 
     public bool Visit (IConcreteValue rhsConcreteValue)
-    => lhsConcreteValue.Accept(new Unifier(rhsConcreteValue, boundVariables));
+        => lhsConcreteValue.Accept(new Unifier(rhsConcreteValue, boundVariables));
 
     public bool Visit (Variable rhsVariable)
     {

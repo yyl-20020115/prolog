@@ -4,9 +4,9 @@ namespace Prolog.Tests;
 
 public class Tracer
 {
-    readonly StringBuilder sb = new ();
+    readonly StringBuilder builder = new ();
 
-    public string Trace => sb.ToString();
+    public string Trace => builder.ToString();
 
     public void Engine_Unified(Runtime.Goal goal)
     {
@@ -25,9 +25,9 @@ public class Tracer
 
     private void PrintGoal (Runtime.Goal goal, string type)
     {
-        sb.Append (type);
-        sb.Append (new string (' ', 4 * goal.Level));
-        Runtime.SolutionTreePrinter.Print (goal, sb);
-        sb.AppendLine();
+        builder.Append (type);
+        builder.Append (new string (' ', 4 * goal.Level));
+        Runtime.SolutionTreePrinter.Print (goal, builder);
+        builder.AppendLine();
     }
 }

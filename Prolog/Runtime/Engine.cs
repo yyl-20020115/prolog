@@ -12,10 +12,7 @@ public class Solution : IDebugEvent
 {
     readonly ISolutionTreeNode tree;
 
-    public Solution (ISolutionTreeNode tree)
-    {
-        this.tree = tree;
-    }
+    public Solution(ISolutionTreeNode tree) => this.tree = tree;
 
     public ISolutionTreeNode Tree => tree;
 
@@ -26,10 +23,7 @@ public class Enter : IDebugEvent
 {
     readonly ISolutionTreeNode node;
 
-    public Enter (ISolutionTreeNode node)
-    {
-        this.node = node;
-    }
+    public Enter(ISolutionTreeNode node) => this.node = node;
 
     public ISolutionTreeNode Node => node;
 
@@ -77,10 +71,10 @@ public class Engine : IDebugEventSink
     Solution solution;
 
     private void RaiseUnified (Goal goal)
-    => Unified?.Invoke(goal);
+        => Unified?.Invoke(goal);
 
     private void RaiseFailed (Goal goal)
-    => Failed?.Invoke(goal);
+        => Failed?.Invoke(goal);
 
     void IDebugEventSink.Visit(Solution newSolution) => this.solution = newSolution;
 

@@ -29,7 +29,7 @@ public class Frame : ISolutionTreeNode
 
     public int GoalsProven;
 
-    public Frame Parent => HeadGoal == null ? null : HeadGoal.Frame;
+    public Frame Parent => HeadGoal?.Frame;
 
     public IEnumerable <Frame> ParentFrames
     {

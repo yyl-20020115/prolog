@@ -8,10 +8,7 @@ public class Program
 {
     public readonly Dictionary <Tuple <string, int>, Predicate> predicatesByName;
 
-    public Program (Dictionary <Tuple <string, int>, Predicate> predicatesByName)
-    {
-        this.predicatesByName = predicatesByName;
-    }
+    public Program(Dictionary<Tuple<string, int>, Predicate> predicatesByName) => this.predicatesByName = predicatesByName;
 
     public void SetExternalPredicateCallbacks (IEnumerable <KeyValuePair <ExternalPredicateDeclaration, ExternalPredicateDefinition>> externalPredicates)
     {

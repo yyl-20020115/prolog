@@ -12,9 +12,10 @@ class Unifier : IConcreteValueVisitor <bool>
     }
 
     bool IConcreteValueVisitor <bool>.Visit(Atom rhs)
-    => lhs.Accept(new AtomUnifier(rhs));
+        => lhs.Accept(new AtomUnifier(rhs));
 
-    bool IConcreteValueVisitor<bool>.Visit(List rhs) => lhs.Accept(new ListUnifier(rhs, boundVariables));
+    bool IConcreteValueVisitor<bool>.Visit(List rhs) 
+        => lhs.Accept(new ListUnifier(rhs, boundVariables));
 }
 
 class AtomUnifier : IConcreteValueVisitor <bool>
@@ -40,7 +41,8 @@ class ListUnifier : IConcreteValueVisitor <bool>
     }
 
     bool IConcreteValueVisitor <bool>.Visit(Atom atom)
-    => false;
+        => false;
 
-    bool IConcreteValueVisitor<bool>.Visit(List lhsList) => lhsList.IsSameLength(rhsList) && boundVariables.ZipUnify(rhsList, lhsList);
+    bool IConcreteValueVisitor<bool>.Visit(List lhsList) 
+        => lhsList.IsSameLength(rhsList) && boundVariables.ZipUnify(rhsList, lhsList);
 }

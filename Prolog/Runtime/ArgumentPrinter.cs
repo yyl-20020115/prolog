@@ -5,7 +5,7 @@ namespace Prolog.Runtime;
 public class ArgumentPrinter : IValueVisitor <string>
 {
     public string Visit (Atom atom)
-    => atom.Name;
+        => atom.Name;
 
     public string Visit (Variable variable)
     {
@@ -20,5 +20,5 @@ public class ArgumentPrinter : IValueVisitor <string>
     /// Convenience method.
     /// </summary>
     public string Print (IValue value)
-    => value.Accept(this);
+        => value.Accept(this);
 }

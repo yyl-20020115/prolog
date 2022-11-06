@@ -10,11 +10,14 @@ public class Variables : IEnumerable <KeyValuePair <string, IConcreteValue>>
 
     internal Variables(Dictionary<string, Variable> variables) => this.variables = variables;
 
-    public IConcreteValue this[string variableName] => variables.TryGetValue(variableName, out Variable variable) ? variable.ConcreteValue : null;
+    public IConcreteValue this[string variableName] 
+        => variables.TryGetValue(variableName, out var variable) ? variable.ConcreteValue : null;
 
-    public bool Contains(string variableName) => this.variables.ContainsKey(variableName);
+    public bool Contains(string variableName) 
+        => this.variables.ContainsKey(variableName);
 
-    public IEnumerator<KeyValuePair<string, IConcreteValue>> GetEnumerator() => variables.ToDictionary(
+    public IEnumerator<KeyValuePair<string, IConcreteValue>> GetEnumerator() 
+        => variables.ToDictionary(
             variable => variable.Key,
             variable => variable.Value.ConcreteValue)
             .GetEnumerator();

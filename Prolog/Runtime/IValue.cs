@@ -6,6 +6,5 @@ public interface IValue
 
     bool Accept (IValueUnifier visitor);
 
-
     IConcreteValue ConcreteValue {get;}
 }
